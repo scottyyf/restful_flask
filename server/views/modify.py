@@ -8,8 +8,9 @@ Email: yangyingfa@skybility.com
 Copyright: Copyright (c) 2022, Skybility Software Co.,Ltd. All rights reserved.
 Description:
 """
+from flask import Blueprint
 from flask_jwt_extended import jwt_required
-from flask_restful import Resource, reqparse
+from flask_restful import Resource, reqparse, Api
 from datetime import datetime
 
 from server.format.format import FixOutput
@@ -47,3 +48,7 @@ class Modify(Resource):
             plan.save()
 
         return FixOutput.to_json()
+
+
+mod_bp = Blueprint('modify', __name__, url_prefix='/modify')
+mode_api = Api(mod_bp,catch_all_404s=True)

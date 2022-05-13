@@ -9,10 +9,10 @@ Copyright: Copyright (c) 2022, Skybility Software Co.,Ltd. All rights reserved.
 Description:
 """
 
-from flask_restful import Resource
-from flask import request, jsonify
+from flask_restful import Resource, Api
+from flask import request, jsonify, Blueprint
 from flask_jwt_extended import (jwt_required, create_access_token,
-                                create_refresh_token, get_jwt_identity,
+                                create_refresh_token,
                                 get_current_user)
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -89,3 +89,10 @@ class Login(Resource):
         identity = get_current_user()
         access_token = create_access_token(identity=identity, fresh=True)
         return jsonify(token=access_token)
+
+
+auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
+auth_api = Api(auth_bp,catch_all_404s=True)
+
+login_bp = Blueprint('login', __name__, url_prefix='/login')
+login_api = Api(login_bp, catch_all_404s=True)

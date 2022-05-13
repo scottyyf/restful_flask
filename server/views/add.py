@@ -8,8 +8,9 @@ Email: yangyingfa@skybility.com
 Copyright: Copyright (c) 2022, Skybility Software Co.,Ltd. All rights reserved.
 Description:
 """
+from flask import Blueprint
 from flask_jwt_extended import jwt_required
-from flask_restful import Resource, reqparse
+from flask_restful import Resource, reqparse, Api
 from datetime import datetime
 
 from server.format.format import FixOutput
@@ -52,9 +53,13 @@ class Add(Resource):
 
         if Plan.query.filter(Plan.name == args.name).all():
             return FixOutput.failed_json('name {0} already exist'.format(
-                args.name)), 405
+                args.name))
 
         Plan.create(end_at=args.end_at, name=args.name,
                     description=args.description,
                     day=day)
-        return FixOutput.to_json(), 201
+        return FixOutput.to_json()
+
+
+add_bp = Blueprint('add', __name__, url_prefix='/add')
+add_api = Api(add_bp,catch_all_404s=True)

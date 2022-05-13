@@ -8,13 +8,16 @@ Email: yangyingfa@skybility.com
 Copyright: Copyright (c) 2022, Skybility Software Co.,Ltd. All rights reserved.
 Description:
 """
-from flask import jsonify
+import json
+
+from flask import jsonify, make_response
 
 
 class MultiObj(object):
-    def __init__(self, obj, *args):
+    def __init__(self, obj, *args, status_code=200):
         self.obj = obj
         self.args = args
+        self.status_code = status_code
 
     def to_json(self):
         ret = {}
@@ -33,27 +36,38 @@ class MultiObj(object):
             if inner:
                 ret[one.id] = inner
 
-        return ret
+        rsp = make_response(json.dumps(ret), self.status_code)
+        rsp.headers.update({'Content-Type': 'application/json'})
+
+        return rsp
 
 
 class OneObj(object):
-    def __init__(self, obj, *args):
+    def __init__(self, obj, *args, status_code=200):
         self.obj = obj
         self.args = args
+        self.status_code = status_code
 
     def to_json(self):
         ret = {}
         for arg in self.args:
             ret[arg] = str(getattr(self.obj, '{0}'.format(arg)))
 
-        return jsonify(**ret)
+        rsp = make_response(json.dumps(ret), self.status_code)
+        rsp.headers.update({'Content-Type': 'application/json'})
+        return rsp
 
 
 class FixOutput(object):
     @classmethod
-    def to_json(cls):
-        return jsonify(message='success')
+    def to_json(cls, status_code=200):
+        rsp = make_response(json.dumps({'message': 'success'}), status_code)
+        rsp.headers.update({'Content-Type': 'application/json'})
+        return rsp
 
     @classmethod
-    def failed_json(cls, msg):
-        return jsonify(message='fail', msg=msg)
+    def failed_json(cls, msg, status_code=200):
+        rsp = make_response(json.dumps(
+            {'message': 'fail', 'msg': msg}), status_code)
+        rsp.headers.update({'Content-Type': 'application/json'})
+        return rsp

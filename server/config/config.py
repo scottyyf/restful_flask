@@ -24,9 +24,14 @@ class BasicConfig(object):
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=1)
     JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=1)
 
+    # set redis key expire period for token revoking
+    # self defined k-v
+    REDIS_ACCESS_EXPIRES = timedelta(hours=1)
+
 
 class DevelopConfig(BasicConfig):
     DEBUG = True
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(days=30)
     SQLALCHEMY_DATABASE_URI = \
         'mysql://root:my-secret-pw@192.168.4.91:3306/plan-work-dev'
 
