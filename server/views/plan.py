@@ -9,9 +9,9 @@ Copyright: Copyright (c) 2022, Skybility Software Co.,Ltd. All rights reserved.
 Description:
 """
 
-from flask_restful import Resource, reqparse
+from flask_restful import Resource, reqparse, Api
 from server.models.works import Plan
-from flask import request
+from flask import request, Blueprint
 from flask_jwt_extended import jwt_required
 from server.format.format import MultiObj
 
@@ -52,3 +52,7 @@ class DayPlans(Resource):
                                         error_out=False)
         ret = MultiObj(plan, *Plan.column_args())
         return ret.to_json()
+
+
+plan_bp = Blueprint('plan', __name__, url_prefix='/plan')
+plan_api = Api(plan_bp,catch_all_404s=True)

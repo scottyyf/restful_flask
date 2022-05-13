@@ -8,8 +8,9 @@ Email: yangyingfa@skybility.com
 Copyright: Copyright (c) 2022, Skybility Software Co.,Ltd. All rights reserved.
 Description:
 """
+from flask import Blueprint
 from flask_jwt_extended import jwt_required
-from flask_restful import Resource, reqparse
+from flask_restful import Resource, reqparse, Api
 from server.format.format import FixOutput
 from server.models.works import Plan
 
@@ -25,4 +26,8 @@ class Delete(Resource):
         if plan:
             plan.delete()
 
-        return FixOutput.to_json()
+        return FixOutput.to_json(status_code=201)
+
+
+del_bp = Blueprint('delete', __name__, url_prefix='/delete')
+del_api = Api(del_bp,catch_all_404s=True)

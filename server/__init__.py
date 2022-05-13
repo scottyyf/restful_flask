@@ -50,23 +50,18 @@ def create_app(test_config=True):
     @jwt.additional_claims_loader
     def add_claims_to_access_token(identity):
         return {
-            'attitude': 'support people in Russia'
+            'attitude': 'support people in Russia by {0}'.format(identity)
             }
+
+    @jwt.token_in_blocklist_loader
+    def check_if_token_is_revoked(_, data):
+        jti = data['jti']
+
 
     db.init_app(app)
     migrate.init_app(app, db)
-    api = Api(app, catch_all_404s=True)
 
-    from server.views.plan import DayPlans
-    from server.views.add import Add
-    from server.views.delete import Delete
-    from server.views.modify import Modify
-    from server.views.auth import Auth, Login
-    api.add_resource(Add, '/add')
-    api.add_resource(DayPlans, '/plan')
-    api.add_resource(Delete, '/delete')
-    api.add_resource(Modify, '/modify')
-    api.add_resource(Auth, '/auth')
-    api.add_resource(Login, '/login')
+    from server.routes import add_route
+    add_route(app)
 
     return app
